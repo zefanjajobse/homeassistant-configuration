@@ -1,0 +1,37 @@
+  - platform: snmp
+    name: "WAN Interface Down Octets"
+    unique_id: wan_interface_down_octets
+    host: 10.0.0.1
+    version: "2c"
+    community: jobse
+    # ifHCInOctets G0/0/0. 
+    # Running total of octects (Bytes) going into the interface since router reboot.
+    baseoid: 1.3.6.1.2.1.31.1.1.1.6.2
+    state_class: total_increasing
+    icon: mdi:cloud-download
+    unit_of_measurement: "B"
+  - platform: snmp
+    name: "WAN Interface Up Octets"
+    unique_id: wan_interface_up_octets
+    host: 10.0.0.1
+    version: "2c"
+    community: jobse
+    # ifHCInOctets G0/0/0. 
+    # Running total of octects (Bytes) going into the interface since router reboot.
+    baseoid: 1.3.6.1.2.1.31.1.1.1.10.2
+    state_class: total_increasing
+    icon: mdi:cloud-up
+    unit_of_measurement: "B"
+  
+  - platform: derivative
+    # Calculate the throughput by sampling the SNMP sensor
+    name: "Network - WAN Down Throughput - Bps"
+    source: sensor.wan_interface_down_octets
+    unit_time: s
+    round: 2
+  - platform: derivative
+    # Calculate the throughput by sampling the SNMP sensor
+    name: "Network - WAN Up Throughput - Bps"
+    source: sensor.wan_interface_up_octets
+    unit_time: s
+    round: 2

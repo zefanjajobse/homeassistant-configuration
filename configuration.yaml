@@ -1,0 +1,101 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+logger:
+  default: info
+  logs:
+    # Change this to your own component name
+    custom_components.ics_2000: debug
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+sensor: !include_dir_merge_list sensor/
+shell_command: !include shell_commands.yaml
+
+wake_on_lan:
+
+http:
+  # For extra security set this to only accept connections on localhost if NGINX is on the same machine
+  # Uncommenting this will mean that you can only reach Home Assistant using the proxy, not directly via IP from other clients.
+  # server_host: 127.0.0.1
+  use_x_forwarded_for: true
+  # You must set the trusted proxy IP address so that Home Assistant will properly accept connections
+  # Set this to your NGINX machine IP, or localhost if hosted on the same machine.
+  trusted_proxies:
+    - 172.30.32.0/23
+    - 127.0.0.1
+    - 10.0.0.50
+
+homeassistant:
+  external_url: !secret external_url
+
+template:
+  - sensor:
+      - name: "Memory Precentage Jobse-PC Linux"
+        unique_id: memory_precentage_jobse_pc_linux
+        unit_of_measurement: "%"
+        state: "{{ ((states('sensor.memory_usage_jobse_pc_linux_2') | float ) / (states('sensor.memory_total_jobse_pc_linux_2') | float) * 100) | round(2) }}"
+        state_class: measurement
+      - name: "Memory Precentage Linux Server"
+        unique_id: memory_precentage_linux_server
+        unit_of_measurement: "%"
+        state: "{{ ((states('sensor.memory_usage_linux_server') | float ) / (states('sensor.memory_total_linux_server') | float) * 100) | round(2) }}"
+        state_class: measurement
+
+      - name: "WAN Down Throughput"
+        unique_id: wan_down_throughput
+        unit_of_measurement: Mbps
+        icon: mdi:cloud-download
+        # Convert throughput derivative from Bps to Mbps
+        state: "{{ ((states('sensor.network_wan_down_throughput_bps') | int) * 8 / 10**6) | round(2) }}"
+        state_class: measurement
+      
+      - name: "WAN Down Usage"
+        unique_id: wan_down_usage
+        unit_of_measurement: GiB
+        icon: mdi:cloud-download
+        # Convert usage meter below from B to GiB
+        state: "{{ ((states('sensor.network_wan_down_data_usage_meter_bytes') | int) / 2**30) | round(2) }}"
+        state_class: total_increasing
+        
+      - name: "WAN Up Throughput"
+        unique_id: wan_up_throughput
+        unit_of_measurement: Mbps
+        icon: mdi:cloud-upload
+        # Convert throughput derivative from Bps to Mbps
+        state: "{{ ((states('sensor.network_wan_up_throughput_bps') | int) * 8 / 10**6) | round(2) }}"
+        state_class: measurement
+      
+      - name: "WAN Up Usage"
+        unique_id: wan_up_usage
+        unit_of_measurement: GiB
+        icon: mdi:cloud-upload
+        # Convert usage meter below from B to GiB
+        state: "{{ ((states('sensor.network_wan_up_data_usage_meter_bytes') | int) / 2**30) | round(2) }}"
+        state_class: total_increasing
+
+
+utility_meter:
+  network_wan_down_data_usage_meter_bytes:
+    unique_id: network_wan_down_data_usage_meter_bytes
+    name: Network - WAN Down Data Usage Meter - Bytes
+    source: sensor.wan_interface_down_octets
+    cycle: monthly
+    offset:
+      hours: 72
+      minutes: 0
+      seconds: 0
+  network_wan_up_data_usage_meter_bytes:
+    unique_id: network_wan_up_data_usage_meter_bytes
+    name: Network - WAN Up Data Usage Meter - Bytes
+    source: sensor.wan_interface_up_octets
+    cycle: monthly
+    offset:
+      hours: 72
+      minutes: 0
+      seconds: 0

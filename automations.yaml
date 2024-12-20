@@ -1,0 +1,248 @@
+- id: '1721647025480'
+  alias: Wake Jobse-PC
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.wake_jobse_pc
+  condition: []
+  action:
+  - service: wake_on_lan.send_magic_packet
+    data:
+      broadcast_port: 9
+      mac: 4C:ED:FB:69:58:1E
+  mode: single
+- id: '1729430669232'
+  alias: Kantoor aan/uit
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: short_release
+    subtype: 4
+    unique_id: 233b6a3e-fb70-4581-afde-4f8102c802f9
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: 956ce582743ae933cb66d0205917507a
+  mode: single
+- id: '1729430838579'
+  alias: Slaapkamer aan/uit
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: short_release
+    subtype: 1
+    unique_id: b6f93c44-d8b0-4af1-a3e1-46670aac7a04
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.slaapkamer
+  mode: single
+- id: '1729430936211'
+  alias: helderheid verhogen
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: repeat
+    subtype: 2
+    unique_id: 6560037e-fc90-448b-b3c6-04ebab8626d3
+    trigger: device
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.which_light_philips_hue_brightness
+      state: 'on'
+    then:
+    - device_id: 677e1116167a77c8c7c3989193614a64
+      domain: light
+      entity_id: b649a0007431a957b6911c6e2085d1ad
+      type: brightness_increase
+    else:
+    - device_id: 956ce582743ae933cb66d0205917507a
+      domain: light
+      entity_id: 6f8a999097ad511000abbca84eb16451
+      type: brightness_increase
+  mode: single
+- id: '1729430973596'
+  alias: Helderheid verlagen
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: repeat
+    subtype: 3
+    unique_id: 4f00505c-eef0-4811-9e37-a7aad8e7cf31
+    trigger: device
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.which_light_philips_hue_brightness
+      state: 'on'
+    then:
+    - device_id: 677e1116167a77c8c7c3989193614a64
+      domain: light
+      entity_id: b649a0007431a957b6911c6e2085d1ad
+      type: brightness_decrease
+    else:
+    - device_id: 956ce582743ae933cb66d0205917507a
+      domain: light
+      entity_id: 6f8a999097ad511000abbca84eb16451
+      type: brightness_decrease
+  mode: single
+- id: '1729493784733'
+  alias: Lichten uit bij weggaan
+  description: ''
+  triggers:
+  - trigger: zone
+    entity_id: device_tracker.sm_s921b
+    zone: zone.home
+    event: leave
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id:
+      - 677e1116167a77c8c7c3989193614a64
+      - 956ce582743ae933cb66d0205917507a
+  mode: single
+- id: '1729500772447'
+  alias: Slaapkamer aan/uit macbook
+  description: ''
+  triggers:
+  - event_data:
+      actionID: 658EB89A-604F-4D98-A3B1-A311FF990346
+    event_type: ios.action_fired
+    trigger: event
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: 677e1116167a77c8c7c3989193614a64
+  mode: single
+- id: '1729500851534'
+  alias: Kantoor aan/uit macbook
+  description: ''
+  triggers:
+  - event_data:
+      actionID: B0261D49-AF8B-4F24-8DCE-99E043FB3FCF
+    event_type: ios.action_fired
+    trigger: event
+  conditions: []
+  actions:
+  - action: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: 956ce582743ae933cb66d0205917507a
+  mode: single
+- id: '1729876158401'
+  alias: Brightness control op slaapkamer
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: long_press
+    subtype: 1
+    unique_id: b6f93c44-d8b0-4af1-a3e1-46670aac7a04
+    trigger: device
+  conditions: []
+  actions:
+  - action: input_boolean.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.which_light_philips_hue_brightness
+  mode: single
+- id: '1729876206750'
+  alias: Brightness control op kantoor
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: long_press
+    subtype: 4
+    unique_id: 233b6a3e-fb70-4581-afde-4f8102c802f9
+    trigger: device
+  conditions: []
+  actions:
+  - action: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.which_light_philips_hue_brightness
+  mode: single
+- id: '1729876955873'
+  alias: Max brightness
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: short_release
+    subtype: 2
+    unique_id: 6560037e-fc90-448b-b3c6-04ebab8626d3
+    trigger: device
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.which_light_philips_hue_brightness
+      state: 'on'
+    then:
+    - type: turn_on
+      device_id: 677e1116167a77c8c7c3989193614a64
+      entity_id: b649a0007431a957b6911c6e2085d1ad
+      domain: light
+      brightness_pct: 100
+    else:
+    - type: turn_on
+      device_id: 956ce582743ae933cb66d0205917507a
+      entity_id: 6f8a999097ad511000abbca84eb16451
+      domain: light
+      brightness_pct: 100
+  mode: single
+- id: '1729877012685'
+  alias: min brightness
+  description: ''
+  triggers:
+  - device_id: f30c64660d965281f63deefc688bda87
+    domain: hue
+    type: short_release
+    subtype: 3
+    unique_id: 4f00505c-eef0-4811-9e37-a7aad8e7cf31
+    trigger: device
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.which_light_philips_hue_brightness
+      state: 'on'
+    then:
+    - type: turn_on
+      device_id: 677e1116167a77c8c7c3989193614a64
+      entity_id: b649a0007431a957b6911c6e2085d1ad
+      domain: light
+      brightness_pct: 10
+    else:
+    - type: turn_on
+      device_id: 956ce582743ae933cb66d0205917507a
+      entity_id: 6f8a999097ad511000abbca84eb16451
+      domain: light
+      brightness_pct: 10
+  mode: single
